@@ -43,10 +43,16 @@ function getHashPath() {
   return hashIndex === -1 ? '' : href.substring(hashIndex + 1);
 }
 
+/**
+ * 直接给 location.hash 赋值，会在 history 记录栈中 push 新纪录，是可以回退的
+ */
 function pushHashPath(path) {
   window.location.hash = path;
 }
 
+/**
+ * 通过 location.replace() 方法不会将当前页面保存在 session history中，是不能回退的
+ */
 function replaceHashPath(path) {
   const hashIndex = window.location.href.indexOf('#');
   window.location.replace(
@@ -67,6 +73,11 @@ function createHashHistory(props = {}) {
 
   const { encodePath, decodePath } = HashPathCoders[hashType];
 
+
+  /**
+   * 通过 URL 中的 hash 部分解析出 location 对象
+   * 由于 location 对象的信息全部来自于 hash 部分，所以无法提供 state 字段
+   */
   function getDOMLocation() {
     let path = decodePath(getHashPath());
 
@@ -96,12 +107,17 @@ function createHashHistory(props = {}) {
   let forceNextPop = false;
   let ignorePath = null;
 
+
+  /**
+   * 响应 hash 变化，如果 location 与当前 history 对象维护的 location 不等，则需要同步，
+   */
   function handleHashChange() {
     const path = getHashPath();
     const encodedPath = encodePath(path);
 
     if (path !== encodedPath) {
       // Ensure we always have a properly-encoded hash.
+      // 这会再次触发 hashchange 事件，因为调用 location.replace() 导致 hash 变化会产生 hashchange 事件
       replaceHashPath(encodedPath);
     } else {
       const location = getDOMLocation();
@@ -292,6 +308,9 @@ function createHashHistory(props = {}) {
 
   let listenerCount = 0;
 
+  /**
+   * 因为只关注 hash 变化，所以只需要监听 hashchange 事件
+   */
   function checkDOMListeners(delta) {
     listenerCount += delta;
 

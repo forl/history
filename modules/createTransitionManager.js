@@ -8,6 +8,7 @@ function createTransitionManager() {
 
     prompt = nextPrompt;
 
+    // 保证 setPrompt 返回的 unset 函数不会撤销已被覆盖的 prompt
     return () => {
       if (prompt === nextPrompt) prompt = null;
     };

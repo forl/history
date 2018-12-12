@@ -26,6 +26,7 @@ export default function execSteps(steps, history, done) {
   };
 
   if (steps.length) {
+    // 通过监听器驱动 step，只要每一个 step 函数中有且仅有一个 navigation 操作，就能自动跑完所有 steps
     unlisten = history.listen(execNextStep);
     execNextStep(history.location);
   } else {

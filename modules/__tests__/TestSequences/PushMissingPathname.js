@@ -4,6 +4,12 @@ import execSteps from './execSteps';
 
 export default function(history, done) {
   const steps = [
+    // 如果添加以下测试步骤，就会触发多次调用 unlisten 的潜在问题
+    // () => {
+    //   const unlisten = history.listen(()=>{});
+    //   unlisten();
+    //   unlisten();
+    // },
     location => {
       expect(location).toMatchObject({
         pathname: '/'
