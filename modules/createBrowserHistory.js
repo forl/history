@@ -225,10 +225,7 @@ function createBrowserHistory(props = {}) {
              * 如果当前的 key 在 allKeys 中不存在，则清空 allKeys，再追加新 key
              */
             const prevIndex = allKeys.indexOf(history.location.key);
-            const nextKeys = allKeys.slice(
-              0,
-              prevIndex === -1 ? 0 : prevIndex + 1
-            );
+            const nextKeys = allKeys.slice( 0,prevIndex + 1 );
 
             nextKeys.push(location.key);
             allKeys = nextKeys;
